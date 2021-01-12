@@ -35,6 +35,8 @@ Sequence1 = Union[T, Sequence[T]]
 Sequence2 = Union[T1, T2, Sequence[Union[T1, T2]]]
 Sequence3 = Union[T1, T2, T3, Sequence[Union[T1, T2, T3]]]
 
+ValueType = TypeVar("ValueType", bound=float)
+ValueType_contra = TypeVar("ValueType_contra", bound=float, contravariant=True)
 Float_co = TypeVar("Float_co", covariant=True)
 Float1 = TypeVar("Float1", bound=float)
 Float2 = TypeVar("Float2", bound=float)
@@ -498,6 +500,8 @@ __all__ = [
     "Collection2",
     "Collection3",
     "CyModelProtocol",
+    "ValueType",
+    "ValueType_contra",
     "IterableNonString",
     "MatrixInput",
     "Matrix",
