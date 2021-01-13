@@ -1397,7 +1397,10 @@ var != [nan, nan, nan], var >= [nan, nan, nan], var > [nan, nan, nan]
     '?'
     """
 
-    NDIM: Any  # Literal[0, 1, 2] ???, see issue...
+    @property
+    @abc.abstractmethod
+    def NDIM(self) -> Literal[0, 1, 2]:
+        ...
 
     @property
     @abc.abstractmethod
@@ -2214,7 +2217,7 @@ has been determined, which is not a submask of `Soil([ True,  True, False])`.
         """
         try:
             if isinstance(self, Dim0):
-                return cast(ValueType, self.__hydpy__set_value__())
+                return self.__hydpy__get_value__()
             mask = self.get_submask(*args, **kwargs)
             if numpy.any(mask):
                 weights = self.refweights[mask]
