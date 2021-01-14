@@ -693,51 +693,50 @@ class _ValueProperty(Generic[ValueType], propertytools.BaseDescriptor):
             return self
         return self.fget(obj)
 
-    # the following overloads crash mypy (https://github.com/python/mypy/issues/7205)
-    #
-    # @overload
-    # def __set__(
-    #     self,
-    #     obj: Dim0,
-    #     objtype: Type[Any],
-    #     value: ValueType,
-    # ) -> None:
-    #     ...
-    #
-    # @overload
-    # def __set__(
-    #     self,
-    #     obj: Dim1,
-    #     objtype: Type[Any],
-    #     value: VectorInput[ValueType],
-    # ) -> None:
-    #     ...
-    #
-    # @overload
-    # def __set__(
-    #     self,
-    #     obj: Dim2,
-    #     objtype: Type[Any],
-    #     value: MatrixInput[ValueType],
-    # ) -> None:
-    #     ...
-    #
-    # @overload
-    # def __set__(
-    #     self,
-    #     obj: "Variable[Any, Any, Any]",
-    #     objtype: Type[Any],
-    #     value: MatrixInput[ValueType],
-    # ) -> None:
-    #     ...
-    #
+    @overload
     def __set__(
         self,
-        obj: Union[Dim0, Dim1, Dim2],
+        obj: Dim0,
+        objtype: Type[Any],
+        value: ValueType,
+    ) -> None:
+        ...
+
+    @overload
+    def __set__(
+        self,
+        obj: Dim1,
+        objtype: Type[Any],
+        value: VectorInput[ValueType],
+    ) -> None:
+        ...
+
+    @overload
+    def __set__(
+        self,
+        obj: Dim2,
+        objtype: Type[Any],
+        value: MatrixInput[ValueType],
+    ) -> None:
+        ...
+
+    @overload
+    def __set__(
+        self,
+        obj: "Variable[Any, Any, Any]",
+        objtype: Type[Any],
+        value: MatrixInput[ValueType],
+    ) -> None:
+        ...
+
+    def __set__(
+        self,
+        obj: Union[Dim0, Dim1, Dim2, "Variable[Any, Any, Any]"],
         objtype: Type[Any],
         value: Union[ValueType, VectorInput[ValueType], MatrixInput[ValueType]],
     ) -> None:
-        self.fset(obj, value)
+        self.fset(obj, value)  # type: ignore[arg-type]
+        # too much implementation effort and runtime costs for making this type-safe
 
 
 class _FGetShape(Protocol):
@@ -871,47 +870,45 @@ class _ShapeProperty(propertytools.BaseDescriptor):
             return self
         return self.fget(obj)
 
-    # the following overloads crash mypy (https://github.com/python/mypy/issues/7205)
-    #
-    # @overload
-    # def __set__(
-    #     self,
-    #     obj: Dim0,
-    #     objtype: Type[Any],
-    #     value: ValueType,
-    # ) -> None:
-    #     ...
-    #
-    # @overload
-    # def __set__(
-    #     self,
-    #     obj: Dim1,
-    #     objtype: Type[Any],
-    #     value: VectorInput[ValueType],
-    # ) -> None:
-    #     ...
-    #
-    # @overload
-    # def __set__(
-    #     self,
-    #     obj: Dim2,
-    #     objtype: Type[Any],
-    #     value: MatrixInput[ValueType],
-    # ) -> None:
-    #     ...
-    #
-    # @overload
-    # def __set__(
-    #     self,
-    #     obj: "Variable[Any, Any, Any]",
-    #     objtype: Type[Any],
-    #     value: MatrixInput[ValueType],
-    # ) -> None:
-    #     ...
-    #
+    @overload
     def __set__(
         self,
-        obj: Union[Dim0, Dim1, Dim2],
+        obj: Dim0,
+        objtype: Type[Any],
+        value: Tuple[()],
+    ) -> None:
+        ...
+
+    @overload
+    def __set__(
+        self,
+        obj: Dim1,
+        objtype: Type[Any],
+        value: Tuple[int],
+    ) -> None:
+        ...
+
+    @overload
+    def __set__(
+        self,
+        obj: Dim2,
+        objtype: Type[Any],
+        value: Tuple[int, int],
+    ) -> None:
+        ...
+
+    @overload
+    def __set__(
+        self,
+        obj: "Variable[Any, Any, Any]",
+        objtype: Type[Any],
+        value: Union[Tuple[()], int, Tuple[int], Tuple[int, int]],
+    ) -> None:
+        ...
+
+    def __set__(
+        self,
+        obj: Union[Dim0, Dim1, Dim2, "Variable[Any, Any, Any]"],
         objtype: Type[Any],
         value: Union[Tuple[()], int, Tuple[int], Tuple[int, int]],
     ) -> None:
@@ -1498,7 +1495,7 @@ var != [nan, nan, nan], var >= [nan, nan, nan], var > [nan, nan, nan]
 
     @overload
     def __hydpy__get_value__(
-        self,
+        self: "Variable[SubVariablesType, FastAccessType, ValueType]",
     ) -> Union[ValueType, Vector[ValueType], Matrix[ValueType]]:
         ...
 
@@ -1645,7 +1642,7 @@ occurred: could not broadcast input array from shape (2,) into shape (2,3)
 
     @overload
     def __hydpy__set_value__(
-        self,
+        self: "Variable[SubVariablesType, FastAccessType, ValueType]",
         value: Union[ValueType, VectorInput[ValueType], MatrixInput[ValueType]],
     ) -> None:
         ...
@@ -2026,7 +2023,7 @@ set yet: var([[1.0, nan, 1.0], [1.0, nan, 1.0]]).
             )
 
     @property
-    def refweights(self) -> "Variable[Any, Any, Any]":
+    def refweights(self) -> "Variable[SubVariablesType, FastAccessType, ValueType]":
         """Reference to a |Parameter| object that defines weighting
         coefficients (e.g. fractional areas) for applying function
         |Variable.average_values|.  Must be overwritten by subclasses,
@@ -2918,3 +2915,38 @@ def to_repr(
     else:
         string = objecttools.assignrepr_list2(values, prefix, 72) + ")"
     return "\n".join(self.commentrepr + [string])
+
+
+class V0(Variable[Any, Any, float]):
+    NDIM: Literal[0] = 0
+    TYPE: Type[float]
+    def initinfo(self) -> Tuple[float, bool]:
+        ...
+x: Any
+v0 = V0(x)
+reveal_type(v0.__hydpy__get_value__())
+reveal_type(v0.value)
+v0.__hydpy__set_value__(1.0)
+v0.__hydpy__set_value__([1.0])
+v0.__hydpy__set_value__([[1.0]])
+v0.value = 1.0
+v0.value = [1.0]
+v0.value = [[1.0]]
+
+v1: Variable[Any, Any, float]
+assert isinstance(v1, Dim1)
+v1.__hydpy__set_value__(1.0)
+v1.__hydpy__set_value__([1.0])
+v1.__hydpy__set_value__([[1.0]])
+v1.value = 1.0
+v1.value = [1.0]
+v1.value = [[1.0]]
+
+v2: Variable[Any, Any, float]
+assert isinstance(v2, Dim0)
+v2.__hydpy__set_value__(1.0)
+v2.__hydpy__set_value__([1.0])
+v2.__hydpy__set_value__([[1.0]])
+v2.value = 1.0
+v2.value = [1.0]
+v2.value = [[1.0]]
