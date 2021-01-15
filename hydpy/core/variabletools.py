@@ -538,18 +538,18 @@ if TYPE_CHECKING:
 
 else:
 
-    class Dim(abc.ABC):
+    class _Dim(abc.ABC):
         @classmethod
         def __subclasshook__(cls, subclass: "Variable") -> bool:
             return cls.NDIM == subclass.NDIM
 
-    class Dim0(Dim):
+    class Dim0(_Dim):
         NDIM: Literal[0] = 0
 
-    class Dim1(Dim):
+    class Dim1(_Dim):
         NDIM: Literal[1] = 1
 
-    class Dim2(Dim):
+    class Dim2(_Dim):
         NDIM: Literal[2] = 2
 
 
@@ -587,8 +587,8 @@ class _FSetValue(Protocol[ValueType_contra]):
     @overload
     def __call__(
         self,
-        __obj: Dim0,
-        __value: ValueType_contra,
+        __obj: Dim2,
+        __value: MatrixInput[ValueType_contra],
     ) -> None:
         ...
 
@@ -603,20 +603,8 @@ class _FSetValue(Protocol[ValueType_contra]):
     @overload
     def __call__(
         self,
-        __obj: Dim2,
-        __value: MatrixInput[ValueType_contra],
-    ) -> None:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: "Variable[Any, Any, Any]",
-        __value: Union[
-            ValueType_contra,
-            VectorInput[ValueType_contra],
-            MatrixInput[ValueType_contra],
-        ],
+        __obj: Dim0,
+        __value: ValueType_contra,
     ) -> None:
         ...
 
@@ -696,9 +684,8 @@ class _ValueProperty(Generic[ValueType], propertytools.BaseDescriptor):
     @overload
     def __set__(
         self,
-        obj: Dim0,
-        objtype: Type[Any],
-        value: ValueType,
+        obj: Dim2,
+        value: MatrixInput[ValueType],
     ) -> None:
         ...
 
@@ -706,7 +693,6 @@ class _ValueProperty(Generic[ValueType], propertytools.BaseDescriptor):
     def __set__(
         self,
         obj: Dim1,
-        objtype: Type[Any],
         value: VectorInput[ValueType],
     ) -> None:
         ...
@@ -714,25 +700,14 @@ class _ValueProperty(Generic[ValueType], propertytools.BaseDescriptor):
     @overload
     def __set__(
         self,
-        obj: Dim2,
-        objtype: Type[Any],
-        value: MatrixInput[ValueType],
-    ) -> None:
-        ...
-
-    @overload
-    def __set__(
-        self,
-        obj: "Variable[Any, Any, Any]",
-        objtype: Type[Any],
-        value: MatrixInput[ValueType],
+        obj: Dim0,
+        value: ValueType,
     ) -> None:
         ...
 
     def __set__(
         self,
-        obj: Union[Dim0, Dim1, Dim2, "Variable[Any, Any, Any]"],
-        objtype: Type[Any],
+        obj: Union[Dim0, Dim1, Dim2],
         value: Union[ValueType, VectorInput[ValueType], MatrixInput[ValueType]],
     ) -> None:
         self.fset(obj, value)  # type: ignore[arg-type]
@@ -856,14 +831,14 @@ class _ShapeProperty(propertytools.BaseDescriptor):
     @overload
     def __get__(
         self,
-        obj: "Variable[Any, Any, Any]",
+        obj: Any,
         objtype: Type[Any],
     ) -> Union[Tuple[()], Tuple[int], Tuple[int, int]]:
         ...
 
     def __get__(
         self,
-        obj: Union[None, Dim0, Dim1, Dim2, "Variable[Any, Any, Any]"],
+        obj: Union[None, Dim0, Dim1, Dim2],
         objtype: Type[Any],
     ) -> Union[Tuple[()], Tuple[int], Tuple[int, int], _ShapeProperty]:
         if obj is None:
@@ -873,26 +848,7 @@ class _ShapeProperty(propertytools.BaseDescriptor):
     @overload
     def __set__(
         self,
-        obj: Dim0,
-        objtype: Type[Any],
-        value: Tuple[()],
-    ) -> None:
-        ...
-
-    @overload
-    def __set__(
-        self,
-        obj: Dim1,
-        objtype: Type[Any],
-        value: Tuple[int],
-    ) -> None:
-        ...
-
-    @overload
-    def __set__(
-        self,
         obj: Dim2,
-        objtype: Type[Any],
         value: Tuple[int, int],
     ) -> None:
         ...
@@ -900,16 +856,22 @@ class _ShapeProperty(propertytools.BaseDescriptor):
     @overload
     def __set__(
         self,
-        obj: "Variable[Any, Any, Any]",
-        objtype: Type[Any],
-        value: Union[Tuple[()], int, Tuple[int], Tuple[int, int]],
+        obj: Dim1,
+        value: Tuple[int],
+    ) -> None:
+        ...
+
+    @overload
+    def __set__(
+        self,
+        obj: Dim0,
+        value: Tuple[()],
     ) -> None:
         ...
 
     def __set__(
         self,
-        obj: Union[Dim0, Dim1, Dim2, "Variable[Any, Any, Any]"],
-        objtype: Type[Any],
+        obj: Union[Dim0, Dim1, Dim2],
         value: Union[Tuple[()], int, Tuple[int], Tuple[int, int]],
     ) -> None:
         self.fset(obj, value)
@@ -1482,7 +1444,7 @@ var != [nan, nan, nan], var >= [nan, nan, nan], var > [nan, nan, nan]
             self.__hydpy__set_value__(__args)
 
     @overload
-    def __hydpy__get_value__(self: Dim0) -> ValueType:
+    def __hydpy__get_value__(self: Dim2) -> Matrix[ValueType]:
         ...
 
     @overload
@@ -1490,12 +1452,12 @@ var != [nan, nan, nan], var >= [nan, nan, nan], var > [nan, nan, nan]
         ...
 
     @overload
-    def __hydpy__get_value__(self: Dim2) -> Matrix[ValueType]:
+    def __hydpy__get_value__(self: Dim0) -> ValueType:
         ...
 
     @overload
     def __hydpy__get_value__(
-        self: "Variable[SubVariablesType, FastAccessType, ValueType]",
+        self,
     ) -> Union[ValueType, Vector[ValueType], Matrix[ValueType]]:
         ...
 
@@ -1621,8 +1583,8 @@ occurred: could not broadcast input array from shape (2,) into shape (2,3)
 
     @overload
     def __hydpy__set_value__(
-        self: Dim0,
-        value: ValueType,
+        self: Dim2,
+        value: MatrixInput[ValueType],
     ) -> None:
         ...
 
@@ -1635,15 +1597,8 @@ occurred: could not broadcast input array from shape (2,) into shape (2,3)
 
     @overload
     def __hydpy__set_value__(
-        self: Dim2,
-        value: MatrixInput[ValueType],
-    ) -> None:
-        ...
-
-    @overload
-    def __hydpy__set_value__(
-        self: "Variable[SubVariablesType, FastAccessType, ValueType]",
-        value: Union[ValueType, VectorInput[ValueType], MatrixInput[ValueType]],
+        self: Dim0,
+        value: ValueType,
     ) -> None:
         ...
 
@@ -2285,14 +2240,18 @@ has been determined, which is not a submask of `Soil([ True,  True, False])`.
             return mask(self, **kwargs)
         return mask
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(
+        self,
+        memo: Optional[Dict[int, Any]],
+    ) -> "Variable[SubVariablesType, FastAccessType, ValueType]":
         new = type(self)(None)
         for (key, value) in vars(self).items():
             if key not in self.NOT_DEEPCOPYABLE_MEMBERS:
                 setattr(new, key, copy.deepcopy(value, memo))
         if self.NDIM:
-            new.shape = self.shape
-        new.__hydpy__set_value__(self.value)
+            new.__hydpy__set_shape__(self.__hydpy__get_shape__)  # type: ignore[arg-type]
+        new.__hydpy__set_value__(self.__hydpy__get_value__())  # type: ignore[misc]
+        # to much runtime cost to check all cases
         return new
 
     def __getitem__(self, key):
@@ -2915,38 +2874,3 @@ def to_repr(
     else:
         string = objecttools.assignrepr_list2(values, prefix, 72) + ")"
     return "\n".join(self.commentrepr + [string])
-
-
-class V0(Variable[Any, Any, float]):
-    NDIM: Literal[0] = 0
-    TYPE: Type[float]
-    def initinfo(self) -> Tuple[float, bool]:
-        ...
-x: Any
-v0 = V0(x)
-reveal_type(v0.__hydpy__get_value__())
-reveal_type(v0.value)
-v0.__hydpy__set_value__(1.0)
-v0.__hydpy__set_value__([1.0])
-v0.__hydpy__set_value__([[1.0]])
-v0.value = 1.0
-v0.value = [1.0]
-v0.value = [[1.0]]
-
-v1: Variable[Any, Any, float]
-assert isinstance(v1, Dim1)
-v1.__hydpy__set_value__(1.0)
-v1.__hydpy__set_value__([1.0])
-v1.__hydpy__set_value__([[1.0]])
-v1.value = 1.0
-v1.value = [1.0]
-v1.value = [[1.0]]
-
-v2: Variable[Any, Any, float]
-assert isinstance(v2, Dim0)
-v2.__hydpy__set_value__(1.0)
-v2.__hydpy__set_value__([1.0])
-v2.__hydpy__set_value__([[1.0]])
-v2.value = 1.0
-v2.value = [1.0]
-v2.value = [[1.0]]
