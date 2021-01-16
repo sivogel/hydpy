@@ -19,7 +19,7 @@ from hydpy.core.typingtools import *
 
 Device2Target = Dict[
     Union[devicetools.Node, devicetools.Element],
-    variabletools.Variable[Any, Any],
+    variabletools.Variable[Any, Any, float],
 ]
 
 
@@ -127,7 +127,7 @@ class ExchangeItem:
     def _query_elementvariable(
         element: devicetools.Element,
         properties: ExchangeSpecification,
-    ) -> variabletools.Variable[Any, Any]:
+    ) -> variabletools.Variable[Any, Any, float]:
         model = element.model
         for group in (model.parameters, model.sequences):
             if properties.subgroup is not None:
@@ -265,7 +265,7 @@ handle a parameter of sequence subgroup named `wrong_group.
         the given |ExchangeSpecification| object) handled by the given
         |Selections| object and insert them into the given `device2variable`
         dictionary."""
-        variable: variabletools.Variable[Any, Any]
+        variable: variabletools.Variable[Any, Any, float]
         if self.targetspecs.master in ("node", "nodes"):
             for node in selections.nodes:
                 variable = self._query_nodevariable(node, exchangespec)
@@ -434,7 +434,7 @@ target variables.
 
     def update_variable(
         self,
-        variable: variabletools.Variable[Any, Any],
+        variable: variabletools.Variable[Any, Any, float],
         value: numpy.ndarray,
     ) -> None:
         """Assign the given value(s) to the given target or base variable.

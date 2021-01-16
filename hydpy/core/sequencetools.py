@@ -1318,6 +1318,7 @@ class Sequence_(
     variabletools.Variable[
         SubSequencesType,
         variabletools.FastAccessType,
+        float,
     ],
 ):
     # noinspection PyProtectedMember

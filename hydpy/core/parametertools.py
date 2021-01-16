@@ -953,6 +953,7 @@ class Parameter(
     variabletools.Variable[
         SubParameters,
         FastAccessParameter,
+        float,
     ]
 ):
     """Base class for model parameters.

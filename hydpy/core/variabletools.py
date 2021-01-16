@@ -840,7 +840,7 @@ class _ShapeProperty(propertytools.BaseDescriptor):
         self,
         obj: Union[None, Dim0, Dim1, Dim2],
         objtype: Type[Any],
-    ) -> Union[Tuple[()], Tuple[int], Tuple[int, int], _ShapeProperty]:
+    ) -> Union[Tuple[()], Tuple[int], Tuple[int, int], "_ShapeProperty"]:
         if obj is None:
             return self
         return self.fget(obj)
@@ -1647,7 +1647,6 @@ occurred: could not broadcast input array from shape (2,) into shape (2,3)
                     f"to a numpy ndarray with shape `{self.shape}` "
                     f"and type `{self.TYPE.__name__}`"
                 )
-        if isinstance(value, Sized):
             if len(value) > 1:
                 raise ValueError(
                     f"{len(value)} values are assigned to the scalar "
@@ -2182,7 +2181,7 @@ has been determined, which is not a submask of `Soil([ True,  True, False])`.
             )
 
     @property
-    def availablemasks(self) -> masktools.Masks:
+    def availablemasks(self) -> "masktools.Masks":
         """For |ModelSequence| objects, a |Masks| object provided by the
         corresponding |Model| object; for |NodeSequence| object, a suitable
         |DefaultMask|.
@@ -2208,7 +2207,7 @@ has been determined, which is not a submask of `Soil([ True,  True, False])`.
             return model.masks
         return self.subvars.vars.masks
 
-    def get_submask(self, *args, **kwargs) -> masktools.CustomMask:
+    def get_submask(self, *args, **kwargs) -> "masktools.CustomMask":
         """Get a sub-mask of the mask handled by the actual |Variable| object
         based on the given arguments.
 
@@ -2804,10 +2803,40 @@ named `wrong`.
         return objecttools.dir_(self) + list(self._name2variable.keys())
 
 
+@overload
 def to_repr(
-    self: Variable[Any, Any, Any],
-    values,
-    brackets1d: Optional[bool] = False,
+    self: Dim0,
+    values: ValueType,
+) -> str:
+    ...
+
+@overload
+def to_repr(
+    self: Dim1,
+    values: VectorInput[ValueType],
+    brackets1d: bool = False,
+) -> str:
+    ...
+
+@overload
+def to_repr(
+    self: Dim2,
+    values: MatrixInput[ValueType],
+) -> str:
+    ...
+
+@overload
+def to_repr(
+    self: Variable[Any, Any, ValueType],
+    values: str,
+    brackets1d: bool = False,
+) -> str:
+    ...
+
+def to_repr(
+    self: Union[Dim0, Dim1, Dim2, Variable[Any, Any, ValueType]],
+    values: Union[ValueType, VectorInput[ValueType], MatrixInput[ValueType], str],
+    brackets1d: bool = False,
 ) -> str:
     """Return a valid string representation for the given |Variable|
     object.
@@ -2817,60 +2846,64 @@ def to_repr(
     of class |Variable| like the following:
 
     >>> from hydpy.core.variabletools import to_repr, Variable
-    >>> class Var(Variable):
+    >>> class Var0(Variable):
     ...     NDIM = 0
     ...     TYPE = int
     ...     initinfo = 1.0, False
     ...     _CLS_FASTACCESS_PYTHON = FastAccess
-    >>> var = Var(None)
-    >>> var.value = 2
-    >>> var
-    var(2)
+    >>> var0 = Var0(None)
+    >>> var0.value = 2
+    >>> var0
+    var0(2)
 
     The following examples demonstrate all covered cases.  Note that
     option `brackets1d` allows choosing between a "vararg" and an
     "iterable" string representation for 1-dimensional variables
     (the first one being the default):
 
-    >>> print(to_repr(var, 2))
-    var(2)
+    >>> print(to_repr(var0, 2))
+    var0(2)
 
-    >>> Var.NDIM = 1
-    >>> var = Var(None)
-    >>> var.shape = 3
-    >>> print(to_repr(var, range(3)))
-    var(0, 1, 2)
-    >>> print(to_repr(var, range(3), True))
-    var([0, 1, 2])
-    >>> print(to_repr(var, range(30)))
-    var(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-        19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29)
-    >>> print(to_repr(var, range(30), True))
-    var([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-         19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29])
+    >>> class Var1(Var0):
+    ...     NDIM = 1
+    >>> var1 = Var1(None)
+    >>> var1.shape = 3
+    >>> print(to_repr(var1, [0, 1, 2]))
+    var1(0, 1, 2)
+    >>> print(to_repr(var1, range(3), True))
+    var1([0, 1, 2])
+    >>> print(to_repr(var1, range(30)))
+    var1(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+         19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29)
+    >>> print(to_repr(var1, range(30), True))
+    var1([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29])
 
-    >>> Var.NDIM = 2
-    >>> var = Var(None)
-    >>> var.shape = (2, 3)
-    >>> print(to_repr(var, [range(3), range(3, 6)]))
-    var([[0, 1, 2],
-         [3, 4, 5]])
-    >>> print(to_repr(var, [range(30), range(30, 60)]))
-    var([[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
-         [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
-          46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59]])
+    >>> class Var2(Var1):
+    ...     NDIM = 2
+    >>> var2 = Var2(None)
+    >>> var2.shape = (2, 3)
+    >>> print(to_repr(var2, [range(3), range(3, 6)]))
+    var2([[0, 1, 2],
+          [3, 4, 5]])
+    >>> print(to_repr(var2, [range(30), range(30, 60)]))
+    var2([[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+           19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+          [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45,
+           46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59]])
     """
+    assert isinstance(self, Variable)
     prefix = f"{self.name}("
     if isinstance(values, str):
         string = f"{self.name}({values})"
-    elif self.NDIM == 0:
+    elif isinstance(self, Dim0) and isinstance(values, (float, int)):
         string = f"{self.name}({objecttools.repr_(values)})"
-    elif self.NDIM == 1:
+    elif isinstance(self, Dim1) and isinstance(values, VectorInput):
         if brackets1d:
             string = objecttools.assignrepr_list(values, prefix, 72) + ")"
         else:
             string = objecttools.assignrepr_values(values, prefix, 72) + ")"
     else:
+        assert isinstance(self, Dim2) and isinstance(values, MatrixInput)
         string = objecttools.assignrepr_list2(values, prefix, 72) + ")"
     return "\n".join(self.commentrepr + [string])

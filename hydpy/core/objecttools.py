@@ -1020,7 +1020,7 @@ class _AssignReprBracketed:
 
     def __call__(
         self,
-        values: Sequence[object],
+        values: Collection[object],
         prefix: str,
         width: Optional[int] = None,
     ) -> str:

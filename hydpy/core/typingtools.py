@@ -42,37 +42,79 @@ Float1 = TypeVar("Float1", bound=float)
 Float2 = TypeVar("Float2", bound=float)
 
 
-class VectorInput(Protocol[Float_co]):
-    """Protocol class for providing input to "mathematical", 1-dimensional arrays."""
+if TYPE_CHECKING:
 
-    @overload
-    def __getitem__(
-        self,
-        item: int,
-    ) -> Float_co:
+    @runtime_checkable
+    class VectorInput(Protocol[Float_co]):
+        """Protocol class for providing input to "mathematical", 1-dimensional arrays."""
+
+        @overload
+        def __getitem__(
+            self,
+            item: int,
+        ) -> Float_co:
+            ...
+
+        @overload
+        def __getitem__(
+            self,
+            item: slice,
+        ) -> "VectorInput[Float_co]":
+            ...
+
+        def __getitem__(
+            self,
+            item: Union[int, slice],
+        ) -> Union[Float_co, "VectorInput[Float_co]"]:
+            ...
+
+        def __len__(self) -> int:
+            ...
+
+        def __iter__(self) -> Iterator[Float_co]:
+            ...
+
+    MatrixInput = VectorInput[VectorInput[Float_co]]
+else:
+
+    class VectorInput(abc.ABCMeta):
+        @classmethod
+        def __subclasscheck__(cls, subclass):
+            if cls is VectorInput:
+                try:
+                    return isinstance(subclass[0], float)
+                except IndexError:
+                    return True
+                return False
+            return NotImplemented
+
+        def __getitem__(self, *item):
+            return self
+
+    class VectorInput(metaclass=VectorInput):
         ...
 
-    @overload
-    def __getitem__(
-        self,
-        item: slice,
-    ) -> "VectorInput[Float_co]":
+    class MatrixInputMeta(abc.ABCMeta):
+        @classmethod
+        def __subclasscheck__(cls, subclass):
+            if cls is MatrixInput:
+                try:
+                    thing = subclass[0]
+                except IndexError:
+                    return True  # ToDo
+                try:
+                    return isinstance(thing[0], float)
+                except IndexError:
+                    return True
+                return False
+            return NotImplemented
+
+        def __getitem__(self, *item):
+            return self
+
+    class MatrixInput(metaclass=MatrixInputMeta):
         ...
 
-    def __getitem__(
-        self,
-        item: Union[int, slice],
-    ) -> Union[Float_co, "VectorInput[Float_co]"]:
-        ...
-
-    def __len__(self) -> int:
-        ...
-
-    def __iter__(self) -> Iterator[Float_co]:
-        ...
-
-
-MatrixInput = VectorInput[VectorInput[Float_co]]
 
 VectorSlice = Union[slice, VectorInput[int]]
 
