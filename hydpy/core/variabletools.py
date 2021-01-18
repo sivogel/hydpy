@@ -2552,6 +2552,286 @@ has been determined, which is not a submask of `Soil([ True,  True, False])`.
         return to_repr(self, self.value)
 
 
+class Variable0D(Generic[SubVariablesType, FastAccessType, ValueType]):
+    NDIM: Literal[0] = 0
+    TYPE = Type[ValueType]
+
+    def __hydpy__get_value__(self) -> ValueType:
+        """The actual parameter or sequence value.
+
+        First, we prepare a simple (not fully functional) 0-dimensional |Variable| subclass:
+
+        >>> from hydpy.core.variabletools import Variable, Variable1D
+        >>> class Var(Variable1D, Variable):
+        ...     NDIM = 0
+        ...     TYPE = float
+        ...     initinfo = 3.0, True
+        ...     _CLS_FASTACCESS_PYTHON = FastAccess
+
+        Without making use of default values (see below), trying to
+        query the actual value of a freshly initialised |Variable|
+        object results in the following error:
+
+        >>> var = Var(None)
+        >>> var.value
+        Traceback (most recent call last):
+        ...
+        hydpy.core.exceptiontools.AttributeNotReady: For variable `var`, \
+no value has been defined so far.
+
+        Property |Variable.value| tries to normalise assigned values and
+        raises an error, if not possible:
+
+        >>> var.value = 3
+        >>> var.value
+        3.0
+
+        >>> var.value = ["2.0"]
+        >>> var.value
+        2.0
+
+        >>> var.value = 1.0, 1.0
+        Traceback (most recent call last):
+        ...
+        ValueError: While trying to set the value(s) of variable `var`, the \
+following error occurred: 2 values are assigned to the scalar variable `var`.
+        >>> var.value
+        2.0
+
+        >>> var.value = "O"
+        Traceback (most recent call last):
+        ...
+        TypeError: While trying to set the value(s) of variable `var`, the following \
+error occurred: The given value `O` cannot be converted to type `float`.
+        >>> var.value
+        2.0
+        """
+        if self.__valueready or not self.strict_valuehandling:
+            return self.TYPE(getattr(self.fastaccess, self.name))
+        raise exceptiontools.AttributeNotReady(
+            f"For variable {objecttools.devicephrase(self)}, "
+            f"no value has been defined so far."
+        )
+
+    def __hydpy__set_value__(self, value: ValueType) -> None:
+        try:
+            try:
+                value = self.TYPE(cast(ValueType, value))
+            except BaseException:
+                raise TypeError(
+                    f"The given value `{value}` cannot be converted "
+                    f"to type `{self.TYPE.__name__}`."
+                ) from None
+            setattr(self.fastaccess, self.name, value)
+            self.__valueready = True
+        except BaseException:
+            objecttools.augment_excmessage(
+                f"While trying to set the value of variable "
+                f"{objecttools.devicephrase(self)}"
+            )
+
+    value = propertytools.Property[ValueType, ValueType](
+        fget=__hydpy__get_value__,
+        fset=__hydpy__set_value__,
+    )
+
+    values = propertytools.Property[ValueType, ValueType](
+        fget=__hydpy__get_value__,
+        fset=__hydpy__set_value__,
+        # doc="Alias for |Variable.value|.",  # ToDo
+    )
+
+    def __call__(self, __args: ValueType) -> None:
+        self.__hydpy__set_value__(__args)
+
+
+class Variable1D(Generic[SubVariablesType, FastAccessType, ValueType]):
+    NDIM: Literal[1] = 1
+    TYPE = Type[ValueType]
+
+    def __hydpy__get_value__(self) -> Vector[ValueType]:
+        if (
+            self.__valueready
+            or not self.strict_valuehandling
+            or not self.__hydpy__get_shape__()[0]
+        ):
+            return numpy.asarray(getattr(self.fastaccess, self.name))
+        raise exceptiontools.AttributeNotReady(
+            f"For variable {objecttools.devicephrase(self)}, "
+            f"no values have been defined so far."
+        )
+
+    def __hydpy__set_value__(
+        self,
+        value: Union[ValueType, VectorInput[ValueType]],
+    ) -> None:
+        try:
+            value = getattr(value, "value", value)
+            try:
+                value = numpy.full(self.shape, value, dtype=self.TYPE)
+            except BaseException:
+                objecttools.augment_excmessage(
+                    f"While trying to convert the values `{value}` "
+                    f"to a numpy ndarray with shape `{self.shape}` "
+                    f"and type `{self.TYPE.__name__}`"
+                )
+            setattr(self.fastaccess, self.name, value)
+            self.__valueready = True
+        except BaseException:
+            objecttools.augment_excmessage(
+                f"While trying to set the value(s) of variable "
+                f"{objecttools.devicephrase(self)}"
+            )
+
+    value = propertytools.Property[
+        Union[ValueType, VectorInput[ValueType]],
+        Vector[ValueType],
+    ](
+        fget=__hydpy__get_value__,
+        fset=__hydpy__set_value__,
+    )
+
+    values = propertytools.Property[
+        Union[ValueType, VectorInput[ValueType]],
+        Vector[ValueType],
+    ](
+        fget=__hydpy__get_value__,
+        fset=__hydpy__set_value__,
+        # doc="Alias for |Variable.value|.",  # ToDo
+    )
+
+    @overload
+    def __call__(self, *__args: ValueType) -> None:
+        ...
+
+    @overload
+    def __call__(self, __args: VectorInput[ValueType]) -> None:
+        ...
+
+    def __call__(
+        self,
+        *__args: Any,  # I don't know how to express this
+    ) -> None:
+        if len(__args) == 1:
+            self.__hydpy__set_value__(__args[0])
+        else:
+            self.__hydpy__set_value__(__args)
+
+
+class Variable2D(Generic[SubVariablesType, FastAccessType, ValueType]):
+    NDIM: Literal[0] = 0
+    TYPE = Type[ValueType]
+
+    def __hydpy__get_value__(self: Dim2) -> Matrix[ValueType]:
+        """
+        The above examples deal with a 0-dimensional variable handling
+        |float| values.  The following examples focus on a 2-dimensional
+        variable handling |int| values:
+
+        >>> from hydpy import INT_NAN
+        >>> Var.NDIM = 2
+        >>> Var.TYPE = int
+        >>> Var.initinfo = INT_NAN, False
+
+        For multidimensional objects, assigning new values required
+        defining their |Variable.shape| first:
+
+        >>> var = Var(None)
+        >>> var.value
+        Traceback (most recent call last):
+        ...
+        hydpy.core.exceptiontools.AttributeNotReady: Shape information for \
+variable `var` can only be retrieved after it has been defined.
+
+        >>> var.value = 2
+        Traceback (most recent call last):
+        ...
+        hydpy.core.exceptiontools.AttributeNotReady: While trying to set the \
+value(s) of variable `var`, the following error occurred: Shape information \
+for variable `var` can only be retrieved after it has been defined.
+
+        >>> var.shape = (2, 3)
+        >>> var.value
+        Traceback (most recent call last):
+        ...
+        hydpy.core.exceptiontools.AttributeNotReady: For variable `var`, \
+no values have been defined so far.
+
+        >>> var.value = 2
+        >>> var.value
+        array([[2, 2, 2],
+               [2, 2, 2]])
+
+        >>> var.value = 1, 2
+        Traceback (most recent call last):
+        ...
+        ValueError: While trying to set the value(s) of variable `var`, \
+the following error occurred: While trying to convert the value(s) `(1, 2)` \
+to a numpy ndarray with shape `(2, 3)` and type `int`, the following error \
+occurred: could not broadcast input array from shape (2) into shape (2,3)
+        >>> var.value
+        array([[2, 2, 2],
+               [2, 2, 2]])
+
+        >>> var.shape = (0, 0)
+        >>> var.shape
+        (0, 0)
+        >>> var.value   # doctest: +ELLIPSIS
+        array([], shape=(0, 0), dtype=int...)
+        """
+        if (
+            self.__valueready
+            or not self.strict_valuehandling
+            or not sum(self.__hydpy__get_shape__())
+        ):
+            return numpy.asarray(getattr(self.fastaccess, self.name))
+        raise exceptiontools.AttributeNotReady(
+            f"For variable {objecttools.devicephrase(self)}, "
+            f"no values have been defined so far."
+        )
+
+    def __hydpy__set_value__(
+        self,
+        value: Union[ValueType, MatrixInput[ValueType]],
+    ) -> None:
+        try:
+            value = getattr(value, "value", value)
+            try:
+                value = numpy.full(self.shape, value, dtype=self.TYPE)
+            except BaseException:
+                objecttools.augment_excmessage(
+                    f"While trying to convert the values `{value}` "
+                    f"to a numpy ndarray with shape `{self.shape}` "
+                    f"and type `{self.TYPE.__name__}`"
+                )
+            setattr(self.fastaccess, self.name, value)
+            self.__valueready = True
+        except BaseException:
+            objecttools.augment_excmessage(
+                f"While trying to set the value(s) of variable "
+                f"{objecttools.devicephrase(self)}"
+            )
+
+    value = propertytools.Property[
+        Union[ValueType, MatrixInput[ValueType]],
+        Matrix[ValueType],
+    ](
+        fget=__hydpy__get_value__,
+        fset=__hydpy__set_value__,
+    )
+
+    values = propertytools.Property[
+        Union[ValueType, MatrixInput[ValueType]],
+        Matrix[ValueType],
+    ](
+        fget=__hydpy__get_value__,
+        fset=__hydpy__set_value__,
+    )
+
+    def __call__(self, __args: Union[ValueType, MatrixInput[ValueType]]) -> None:
+        self.__hydpy__set_value__(__args)
+
+
 @overload
 def sort_variables(
     values: Iterable[Type[VariableType]],
@@ -2810,6 +3090,7 @@ def to_repr(
 ) -> str:
     ...
 
+
 @overload
 def to_repr(
     self: Dim1,
@@ -2818,12 +3099,14 @@ def to_repr(
 ) -> str:
     ...
 
+
 @overload
 def to_repr(
     self: Dim2,
     values: MatrixInput[ValueType],
 ) -> str:
     ...
+
 
 @overload
 def to_repr(
@@ -2832,6 +3115,7 @@ def to_repr(
     brackets1d: bool = False,
 ) -> str:
     ...
+
 
 def to_repr(
     self: Union[Dim0, Dim1, Dim2, Variable[Any, Any, ValueType]],
