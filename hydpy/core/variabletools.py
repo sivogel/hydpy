@@ -553,330 +553,6 @@ else:
         NDIM: Literal[2] = 2
 
 
-class _FGetValue(Protocol[ValueType]):
-    @overload
-    def __call__(
-        self,
-        __obj: Dim0,
-    ) -> ValueType:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: Dim1,
-    ) -> Vector[ValueType]:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: Dim2,
-    ) -> Matrix[ValueType]:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: "Variable[Any, Any, Any]",
-    ) -> Union[ValueType, Vector[ValueType], Matrix[ValueType]]:
-        ...
-
-
-class _FSetValue(Protocol[ValueType_contra]):
-    @overload
-    def __call__(
-        self,
-        __obj: Dim2,
-        __value: MatrixInput[ValueType_contra],
-    ) -> None:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: Dim1,
-        __value: VectorInput[ValueType_contra],
-    ) -> None:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: Dim0,
-        __value: ValueType_contra,
-    ) -> None:
-        ...
-
-
-class _ValueProperty(Generic[ValueType], propertytools.BaseDescriptor):
-
-    objtype: Type["Variable[Any, Any, Any]"]
-    fget: _FGetValue[ValueType]
-    fset: _FSetValue[ValueType]
-
-    def __init__(
-        self,
-        fget: _FGetValue[ValueType],
-        fset: _FSetValue[ValueType],
-        doc: Optional[str] = None,
-    ) -> None:
-        self.fget = fget
-        self.fset = fset
-        if doc is None:
-            doc = fget.__doc__
-        self.set_doc(doc)
-
-    @overload
-    def __get__(
-        self,
-        obj: None,
-        objtype: Type[Any],
-    ) -> "_ValueProperty[ValueType]":
-        ...
-
-    @overload
-    def __get__(
-        self,
-        obj: Dim0,
-        objtype: Type[Any],
-    ) -> ValueType:
-        ...
-
-    @overload
-    def __get__(
-        self,
-        obj: Dim1,
-        objtype: Type[Any],
-    ) -> Vector[ValueType]:
-        ...
-
-    @overload
-    def __get__(
-        self,
-        obj: Dim2,
-        objtype: Type[Any],
-    ) -> Matrix[ValueType]:
-        ...
-
-    @overload
-    def __get__(
-        self,
-        obj: "Variable[Any, Any, Any]",
-        objtype: Type[Any],
-    ) -> Union[ValueType, Vector[ValueType], Matrix[ValueType]]:
-        ...
-
-    def __get__(
-        self,
-        obj: Union[None, Dim0, Dim1, Dim2, "Variable[Any, Any, Any]"],
-        objtype: Type[Any],
-    ) -> Union[
-        ValueType,
-        Vector[ValueType],
-        Matrix[ValueType],
-        "_ValueProperty[ValueType]",
-    ]:
-        if obj is None:
-            return self
-        return self.fget(obj)
-
-    @overload
-    def __set__(
-        self,
-        obj: Dim2,
-        value: MatrixInput[ValueType],
-    ) -> None:
-        ...
-
-    @overload
-    def __set__(
-        self,
-        obj: Dim1,
-        value: VectorInput[ValueType],
-    ) -> None:
-        ...
-
-    @overload
-    def __set__(
-        self,
-        obj: Dim0,
-        value: ValueType,
-    ) -> None:
-        ...
-
-    def __set__(
-        self,
-        obj: Union[Dim0, Dim1, Dim2],
-        value: Union[ValueType, VectorInput[ValueType], MatrixInput[ValueType]],
-    ) -> None:
-        self.fset(obj, value)  # type: ignore[arg-type]
-        # too much implementation effort and runtime costs for making this type-safe
-
-
-class _FGetShape(Protocol):
-    @overload
-    def __call__(
-        self,
-        __obj: Dim0,
-    ) -> Tuple[()]:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: Dim1,
-    ) -> Tuple[int]:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: Dim2,
-    ) -> Tuple[int, int]:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: "Variable[Any, Any, Any]",
-    ) -> Union[Tuple[()], Tuple[int], Tuple[int, int]]:
-        ...
-
-
-class _FSetShape(Protocol):
-    @overload
-    def __call__(
-        self,
-        __obj: Dim0,
-        __shape: Tuple[()],
-    ) -> None:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: Dim1,
-        __shape: Union[int, Tuple[int]],
-    ) -> None:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: Dim2,
-        __shape: Tuple[int, int],
-    ) -> None:
-        ...
-
-    @overload
-    def __call__(
-        self,
-        __obj: "Variable[Any, Any, Any]",
-        __shape: Union[Tuple[()], int, Tuple[int], Tuple[int, int]],
-    ) -> None:
-        ...
-
-
-class _ShapeProperty(propertytools.BaseDescriptor):
-
-    objtype: Type["Variable[Any, Any, Any]"]
-    fget: _FGetShape
-    fset: _FSetShape
-
-    def __init__(
-        self,
-        fget: _FGetShape,
-        fset: _FSetShape,
-        doc: Optional[str] = None,
-    ) -> None:
-        self.fget = fget
-        self.fset = fset
-        if doc is None:
-            doc = fget.__doc__
-        self.set_doc(doc)
-
-    @overload
-    def __get__(
-        self,
-        obj: None,
-        objtype: Type[Any],
-    ) -> "_ShapeProperty":
-        ...
-
-    @overload
-    def __get__(
-        self,
-        obj: Dim0,
-        objtype: Type[Any],
-    ) -> Tuple[()]:
-        ...
-
-    @overload
-    def __get__(
-        self,
-        obj: Dim1,
-        objtype: Type[Any],
-    ) -> Tuple[int]:
-        ...
-
-    @overload
-    def __get__(
-        self,
-        obj: Dim2,
-        objtype: Type[Any],
-    ) -> Tuple[int, int]:
-        ...
-
-    @overload
-    def __get__(
-        self,
-        obj: Any,
-        objtype: Type[Any],
-    ) -> Union[Tuple[()], Tuple[int], Tuple[int, int]]:
-        ...
-
-    def __get__(
-        self,
-        obj: Union[None, Dim0, Dim1, Dim2],
-        objtype: Type[Any],
-    ) -> Union[Tuple[()], Tuple[int], Tuple[int, int], "_ShapeProperty"]:
-        if obj is None:
-            return self
-        return self.fget(obj)
-
-    @overload
-    def __set__(
-        self,
-        obj: Dim2,
-        value: Tuple[int, int],
-    ) -> None:
-        ...
-
-    @overload
-    def __set__(
-        self,
-        obj: Dim1,
-        value: Tuple[int],
-    ) -> None:
-        ...
-
-    @overload
-    def __set__(
-        self,
-        obj: Dim0,
-        value: Tuple[()],
-    ) -> None:
-        ...
-
-    def __set__(
-        self,
-        obj: Union[Dim0, Dim1, Dim2],
-        value: Union[Tuple[()], int, Tuple[int], Tuple[int, int]],
-    ) -> None:
-        self.fset(obj, value)
-
-
 class Variable(Generic[SubVariablesType, FastAccessType, ValueType]):
     """Base class for |Parameter| and |Sequence_|.
 
@@ -893,9 +569,8 @@ class Variable(Generic[SubVariablesType, FastAccessType, ValueType]):
     on 0-dimensional |Variable| objects handling |float| values:
 
     >>> import numpy
-    >>> from hydpy.core.variabletools import FastAccess, Variable
-    >>> class Var(Variable):
-    ...     NDIM = 0
+    >>> from hydpy.core.variabletools import FastAccess, Variable, Variable0D
+    >>> class Var(Variable0D, Variable):
     ...     TYPE = float
     ...     initinfo = 0.0, False
     ...     _CLS_FASTACCESS_PYTHON = FastAccess
@@ -1022,8 +697,12 @@ For variable `var`, no value has been defined so far.
     You can apply all the operations discussed above (except |float| and
     |int|) on |Variable| objects of arbitrary dimensionality:
 
-    >>> Var.NDIM = 1
-    >>> Var.TYPE = float
+    >>> from hydpy.core.variabletools import FastAccess, Variable, Variable1D
+    >>> class Var(Variable1D, Variable):
+    ...     TYPE = float
+    ...     initinfo = 0.0, False
+    ...     _CLS_FASTACCESS_PYTHON = FastAccess
+    >>> var = Var(None)
     >>> var.shape = (2,)
     >>> var.values = 2.0
     >>> var + var
@@ -1386,8 +1065,8 @@ var != [nan, nan, nan], var >= [nan, nan, nan], var > [nan, nan, nan]
     def __init__(self, subvars: SubVariablesType) -> None:
         self.subvars = subvars
         self.fastaccess = self._CLS_FASTACCESS_PYTHON()
-        self.__valueready = False
-        self.__shapeready = False
+        self._valueready = False
+        self._shapeready = False
 
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
@@ -1961,13 +1640,14 @@ set yet: var([[1.0, nan, 1.0], [1.0, nan, 1.0]]).
         >>> Var.mask[1, 1] = False
         >>> var.verify()
         """
-        valueready = self.__valueready
+        valueready = self._valueready
         try:
-            self.__valueready = True
-            # noinspection PyTypeChecker
-            nmbnan: int = numpy.sum(numpy.isnan(numpy.array(self.value)[self.mask]))
+            self._valueready = True
+            nmbnan: int = numpy.sum(
+                numpy.isnan(numpy.array(self.__hydpy__get_value())[self.mask])
+            )
         finally:
-            self.__valueready = valueready
+            self._valueready = valueready
         if nmbnan:
             text = "value has" if nmbnan == 1 else "values have"
             raise RuntimeError(
@@ -2253,38 +1933,6 @@ has been determined, which is not a submask of `Soil([ True,  True, False])`.
         # to much runtime cost to check all cases
         return new
 
-    def __getitem__(self, key):
-        try:
-            if self.NDIM:
-                return self.value[key]
-            self._check_key(key)
-            return self.value
-        except BaseException:
-            objecttools.augment_excmessage(
-                f"While trying to access the value(s) of variable "
-                f"{objecttools.devicephrase(self)} with key `{key}`"
-            )
-
-    def __setitem__(self, key, value):
-        try:
-            if self.NDIM:
-                self.value[key] = value
-            else:
-                self._check_key(key)
-                self.__hydpy__set_value__(value)
-        except BaseException:
-            objecttools.augment_excmessage(
-                f"While trying to set the value(s) of variable "
-                f"{objecttools.devicephrase(self)} with key `{key}`"
-            )
-
-    @staticmethod
-    def _check_key(key):
-        if key not in (0, slice(None, None, None)):
-            raise IndexError(
-                "The only allowed keys for 0-dimensional variables " "are `0` and `:`."
-            )
-
     def __len__(self) -> int:
         try:
             return numpy.cumprod(self.shape)[-1]
@@ -2556,6 +2204,162 @@ class Variable0D(Generic[SubVariablesType, FastAccessType, ValueType]):
     NDIM: Literal[0] = 0
     TYPE = Type[ValueType]
 
+    def __hydpy__get_shape__(self) -> Tuple[()]:
+        """A tuple containing the actual lengths of all dimensions.
+
+        Note that setting a new |Variable.shape| results in a loss of
+        the actual |Variable.values| of the respective |Variable| object.
+
+        First, we prepare a simple (not fully functional) |Variable| subclass:
+
+        >>> from hydpy.core.variabletools import Variable, Variable1D
+        >>> class Var(Variable, Variable1D):
+        ...     NDIM = 1
+        ...     TYPE = float
+        ...     initinfo = 3.0, True
+        ...     _CLS_FASTACCESS_PYTHON = FastAccess
+
+        Initially, the shape of a new |Variable| object is unknown:
+
+        >>> var = Var(None)
+        >>> var.shape
+        Traceback (most recent call last):
+        ...
+        hydpy.core.exceptiontools.AttributeNotReady: Shape information for \
+variable `var` can only be retrieved after it has been defined.
+
+        For multidimensional objects, assigning shape information (as a
+        |tuple| of |int| values) prepares the required array automatically.
+        Due to the |Variable.initinfo| surrogate of our test class,
+        the entries of this array are `3.0`:
+
+        >>> var.shape = (3,)
+        >>> var.shape
+        (3,)
+        >>> var.values
+        array([ 3.,  3.,  3.])
+
+        For the |Variable.initinfo| flag (second |tuple| entry) being
+        |False|, the array is still prepared but not directly accessible
+        to the user:
+
+        >>> import numpy
+        >>> Var.initinfo = numpy.nan, False
+        >>> var = Var(None)
+
+        >>> var.shape = (3,)
+        >>> var.shape
+        (3,)
+        >>> var.values
+        Traceback (most recent call last):
+        ...
+        hydpy.core.exceptiontools.AttributeNotReady: For variable `var`, no \
+values have been defined so far.
+
+        >>> var.fastaccess.var
+        array([ nan,  nan,  nan])
+
+        Property |Variable.shape| tries to normalise assigned values and
+        raises errors like the following, if not possible:
+
+        >>> var.shape = "x"
+        Traceback (most recent call last):
+        ...
+        TypeError: While trying create a new numpy ndarray for \
+variable `var`, the following error occurred: 'str' object cannot \
+be interpreted as an integer
+        >>> from hydpy import attrready
+        >>> attrready(var, "shape")
+        False
+        >>> var.fastaccess.var
+
+        >>> var.shape = (1,)
+        >>> attrready(var, "shape")
+        True
+
+        >>> var.shape = (2, 3)
+        Traceback (most recent call last):
+        ...
+        ValueError: Variable `var` is 1-dimensional, but the given \
+shape indicates `2` dimensions.
+        >>> attrready(var, "shape")
+        False
+        >>> var.fastaccess.var
+
+
+        0-dimensional |Variable| objects inform the user about their shape
+        but do not allow to change it for obvious reasons:
+
+        >>> from hydpy.core.variabletools import Variable0D
+        >>> class Var(Variable, Variable0D):
+        ...     NDIM = 0
+        ...     TYPE = int
+        ...     initinfo = 3, True
+        ...     _CLS_FASTACCESS_PYTHON = FastAccess
+
+        >>> var = Var(None)
+        >>> var.shape
+        ()
+        >>> var.value
+        Traceback (most recent call last):
+        ...
+        hydpy.core.exceptiontools.AttributeNotReady: For variable `var`, \
+no value has been defined so far.
+
+        >>> var.shape = ()
+        >>> var.shape
+        ()
+        >>> var.value
+        3
+        >>> var.shape = (2,)
+        Traceback (most recent call last):
+        ...
+        ValueError: The shape information of 0-dimensional variables \
+as `var` can only be `()`, but `(2,)` is given.
+
+        With a |False| |Variable.initinfo| flag, the default value is
+        still readily prepared after initialisation but not directly
+        accessible to the user:
+
+        >>> from hydpy import INT_NAN
+        >>> Var.initinfo = INT_NAN, False
+        >>> var = Var(None)
+        >>> var.shape
+        ()
+        >>> var.shape = ()
+        >>> attrready(var, "value")
+        False
+        >>> var.fastaccess.var
+        -999999
+
+        >>> var.value = 6
+        >>> var.value
+        6
+
+        >>> var.shape = ()
+        >>> var.fastaccess.var
+        -999999
+        """
+        return ()
+
+    def __hydpy__set_shape__(self, shape: Tuple[()]) -> None:
+        self._valueready = False
+        self._shapeready = False
+        if shape:
+            setattr(self.fastaccess, self.name, TYPE2MISSINGVALUE[self.TYPE])
+            raise ValueError(
+                f"The shape information of 0-dimensional variables "
+                f"as {objecttools.devicephrase(self)} can only be `()`, "
+                f"but `{shape}` is given."
+            )
+        setattr(self.fastaccess, self.name, self.initinfo[0])
+        self._shapeready = True
+
+    shape = propertytools.Property[Tuple[()], Tuple[()]](
+        fget=__hydpy__get_shape__,
+        fset=__hydpy__set_shape__,
+    )
+
     def __hydpy__get_value__(self) -> ValueType:
         """The actual parameter or sequence value.
 
@@ -2606,7 +2410,7 @@ error occurred: The given value `O` cannot be converted to type `float`.
         >>> var.value
         2.0
         """
-        if self.__valueready or not self.strict_valuehandling:
+        if self._valueready or not self.strict_valuehandling:
             return self.TYPE(getattr(self.fastaccess, self.name))
         raise exceptiontools.AttributeNotReady(
             f"For variable {objecttools.devicephrase(self)}, "
@@ -2623,7 +2427,7 @@ error occurred: The given value `O` cannot be converted to type `float`.
                     f"to type `{self.TYPE.__name__}`."
                 ) from None
             setattr(self.fastaccess, self.name, value)
-            self.__valueready = True
+            self._valueready = True
         except BaseException:
             objecttools.augment_excmessage(
                 f"While trying to set the value of variable "
@@ -2644,14 +2448,83 @@ error occurred: The given value `O` cannot be converted to type `float`.
     def __call__(self, __args: ValueType) -> None:
         self.__hydpy__set_value__(__args)
 
+    def __add__(
+        self: "Variable0D[SubVariablesType, FastAccessType, ValueType]",
+        value: Union["Variable0D[SubVariablesType, FastAccessType, Float]", Float],
+    ) -> Union[ValueType, Float]:
+        return self.__hydpy__get_value__().__add__(
+            value.__hydpy__get_value__() if isinstance(value, Variable0D) else value
+        )
+
+    def __radd__(
+        self: "Variable0D[SubVariablesType, FastAccessType, ValueType]",
+        value: Union["Variable0D[SubVariablesType, FastAccessType, Float]", Float],
+    ) -> Union[ValueType, Float]:
+        return self.__hydpy__get_value__().__radd__(
+            value.__hydpy__get_value__() if isinstance(value, Variable0D) else value
+        )
+
+    def __iadd__(
+        self: "Variable0D[SubVariablesType, FastAccessType, ValueType]",
+        value: Union[
+            "Variable0D[SubVariablesType, FastAccessType, ValueType]",
+            ValueType,
+        ],
+    ) -> "Variable0D[SubVariablesType, FastAccessType, ValueType]":
+        self.__hydpy__set_value__(
+            self.__hydpy__get_value__().__add__(
+                value.__hydpy__get_value__() if isinstance(value, Variable0D) else value
+            )
+        )
+        return self
+
 
 class Variable1D(Generic[SubVariablesType, FastAccessType, ValueType]):
     NDIM: Literal[1] = 1
     TYPE = Type[ValueType]
 
+    def __hydpy__get_shape__(self) -> Tuple[int]:
+        if self._shapeready:
+            shape = getattr(self.fastaccess, self.name).shape
+            return tuple(int(x) for x in shape)
+        raise exceptiontools.AttributeNotReady(
+            f"Shape information for variable "
+            f"{objecttools.devicephrase(self)} can only "
+            f"be retrieved after it has been defined."
+        )
+
+    def __hydpy__set_shape__(self, shape: Union[int, Tuple[int]]) -> None:
+        self._valueready = False
+        self._shapeready = False
+        initvalue, initflag = self.initinfo
+        try:
+            array: numpy.ndarray = numpy.full(shape, initvalue, dtype=self.TYPE)
+        except BaseException:
+            setattr(self.fastaccess, self.name, None)
+            objecttools.augment_excmessage(
+                f"While trying create a new numpy ndarray for variable "
+                f"{objecttools.devicephrase(self)}"
+            )
+        if array.ndim != self.NDIM:
+            setattr(self.fastaccess, self.name, None)
+            raise ValueError(
+                f"Variable {objecttools.devicephrase(self)} is "
+                f"{self.NDIM}-dimensional, but the given "
+                f"shape indicates `{array.ndim}` dimensions."
+            )
+        setattr(self.fastaccess, self.name, array)
+        self._shapeready = True
+        if initflag:
+            self._valueready = True
+
+    shape = propertytools.Property[Union[int, Tuple[int]], Tuple[int]](
+        fget=__hydpy__get_shape__,
+        fset=__hydpy__set_shape__,
+    )
+
     def __hydpy__get_value__(self) -> Vector[ValueType]:
         if (
-            self.__valueready
+            self._valueready
             or not self.strict_valuehandling
             or not self.__hydpy__get_shape__()[0]
         ):
@@ -2676,7 +2549,7 @@ class Variable1D(Generic[SubVariablesType, FastAccessType, ValueType]):
                     f"and type `{self.TYPE.__name__}`"
                 )
             setattr(self.fastaccess, self.name, value)
-            self.__valueready = True
+            self._valueready = True
         except BaseException:
             objecttools.augment_excmessage(
                 f"While trying to set the value(s) of variable "
@@ -2717,10 +2590,104 @@ class Variable1D(Generic[SubVariablesType, FastAccessType, ValueType]):
         else:
             self.__hydpy__set_value__(__args)
 
+    @overload
+    def __getitem__(
+        self,
+        key: int,
+    ) -> ValueType:
+        ...
+
+    @overload
+    def __getitem__(
+        self,
+        key: VectorSlice,
+    ) -> Vector[ValueType]:
+        ...
+
+    def __getitem__(
+        self,
+        key: Union[int, slice, VectorInput[int]],
+    ) -> Union[ValueType, Vector[ValueType]]:
+        try:
+            return self.value[key]
+        except BaseException:
+            objecttools.augment_excmessage(
+                f"While trying to access the value(s) of variable "
+                f"{objecttools.devicephrase(self)} with key `{key}`"
+            )
+
+    @overload
+    def __setitem__(
+        self,
+        key: int,
+        value: ValueType,
+    ) -> None:
+        ...
+
+    @overload
+    def __setitem__(
+        self,
+        key: VectorSlice,
+        value: Union[ValueType, VectorInput[ValueType]],
+    ) -> None:
+        ...
+
+    def __setitem__(
+        self,
+        key: Union[int, VectorSlice],
+        value: Union[ValueType, VectorInput[ValueType]],
+    ) -> None:
+        try:
+            self.value[key] = value
+        except BaseException:
+            objecttools.augment_excmessage(
+                f"While trying to set the value(s) of variable "
+                f"{objecttools.devicephrase(self)} with key `{key}`"
+            )
+
 
 class Variable2D(Generic[SubVariablesType, FastAccessType, ValueType]):
     NDIM: Literal[0] = 0
     TYPE = Type[ValueType]
+
+    def __hydpy__get_shape__(self) -> Tuple[int, int]:
+        if self._shapeready:
+            shape = getattr(self.fastaccess, self.name).shape
+            return tuple(int(x) for x in shape)
+        raise exceptiontools.AttributeNotReady(
+            f"Shape information for variable "
+            f"{objecttools.devicephrase(self)} can only "
+            f"be retrieved after it has been defined."
+        )
+
+    def __hydpy__set_shape__(self, shape: Union[int, Tuple[int]]) -> None:
+        self._valueready = False
+        self._shapeready = False
+        initvalue, initflag = self.initinfo
+        try:
+            array: numpy.ndarray = numpy.full(shape, initvalue, dtype=self.TYPE)
+        except BaseException:
+            setattr(self.fastaccess, self.name, None)
+            objecttools.augment_excmessage(
+                f"While trying create a new numpy ndarray for variable "
+                f"{objecttools.devicephrase(self)}"
+            )
+        if array.ndim != self.NDIM:
+            setattr(self.fastaccess, self.name, None)
+            raise ValueError(
+                f"Variable {objecttools.devicephrase(self)} is "
+                f"{self.NDIM}-dimensional, but the given "
+                f"shape indicates `{array.ndim}` dimensions."
+            )
+        setattr(self.fastaccess, self.name, array)
+        self._shapeready = True
+        if initflag:
+            self._valueready = True
+
+    shape = propertytools.Property[Tuple[int, int], Tuple[int, int]](
+        fget=__hydpy__get_shape__,
+        fset=__hydpy__set_shape__,
+    )
 
     def __hydpy__get_value__(self: Dim2) -> Matrix[ValueType]:
         """
@@ -2780,7 +2747,7 @@ occurred: could not broadcast input array from shape (2) into shape (2,3)
         array([], shape=(0, 0), dtype=int...)
         """
         if (
-            self.__valueready
+            self._valueready
             or not self.strict_valuehandling
             or not sum(self.__hydpy__get_shape__())
         ):
@@ -2805,7 +2772,7 @@ occurred: could not broadcast input array from shape (2) into shape (2,3)
                     f"and type `{self.TYPE.__name__}`"
                 )
             setattr(self.fastaccess, self.name, value)
-            self.__valueready = True
+            self._valueready = True
         except BaseException:
             objecttools.augment_excmessage(
                 f"While trying to set the value(s) of variable "
@@ -2830,6 +2797,97 @@ occurred: could not broadcast input array from shape (2) into shape (2,3)
 
     def __call__(self, __args: Union[ValueType, MatrixInput[ValueType]]) -> None:
         self.__hydpy__set_value__(__args)
+
+    @overload
+    def __getitem__(
+        self,
+        key: Tuple[int, int],
+    ) -> ValueType:
+        ...
+
+    @overload
+    def __getitem__(
+        self,
+        key: Union[
+            int,
+            Tuple[int, VectorSlice],
+            Tuple[VectorSlice, int],
+        ],
+    ) -> Vector[ValueType]:
+        ...
+
+    @overload
+    def __getitem__(
+        self,
+        key: Union[
+            slice,
+            Tuple[VectorSlice, VectorSlice],
+        ],
+    ) -> Matrix[ValueType]:
+        ...
+
+    def __getitem__(
+        self,
+        key: Union[
+            Tuple[int, int],
+            int,
+            Tuple[int, VectorSlice],
+            Tuple[VectorSlice, int],
+            slice,
+            Tuple[VectorSlice, VectorSlice],
+        ],
+    ) -> Union[ValueType, Vector[ValueType], Matrix[ValueType]]:
+        try:
+            return self.value[key]
+        except BaseException:
+            objecttools.augment_excmessage(
+                f"While trying to access the value(s) of variable "
+                f"{objecttools.devicephrase(self)} with key `{key}`"
+            )
+
+    @overload
+    def __setitem__(
+        self,
+        key: Tuple[int, int],
+        value: ValueType,
+    ) -> None:
+        ...
+
+    @overload
+    def __setitem__(
+        self,
+        key: Union[int, Tuple[int, VectorSlice], Tuple[VectorSlice, int]],
+        value: Union[ValueType, VectorInput[ValueType]],
+    ) -> None:
+        ...
+
+    @overload
+    def __setitem__(
+        self,
+        key: Union[slice, Tuple[VectorSlice, VectorSlice]],
+        value: Union[ValueType, MatrixInput[ValueType]],
+    ) -> None:
+        ...
+
+    def __setitem__(
+        self,
+        key: Union[
+            int,
+            Tuple[int, int],
+            Tuple[int, VectorSlice],
+            Tuple[VectorSlice, int],
+            slice,
+            Tuple[VectorSlice, VectorSlice],
+        ],
+        value: Union[float, VectorInput[ValueType], MatrixInput[ValueType]],
+    ) -> None:
+        try:
+            self.value[key] = value
+        except BaseException:
+            objecttools.augment_excmessage(
+                f"While trying to set the value(s) of variable "
+                f"{objecttools.devicephrase(self)} with key `{key}`"
+            )
 
 
 @overload
@@ -2890,9 +2948,9 @@ class SubVariables(Generic[GroupType, VariableType, FastAccessType]):
     For the following examples, we first prepare a (not fully
     functional) |Variable| subclass:
 
-    >>> from hydpy.core.variabletools import FastAccess, SubVariables, Variable
-    >>> class TestVar(Variable):
-    ...     NDIM = 0
+    >>> from hydpy.core.variabletools import \
+FastAccess, SubVariables, Variable, Variable0D
+    >>> class TestVar(Variable0D, Variable):
     ...     TYPE = float
     ...     initinfo = 0.0, False
     ...     _CLS_FASTACCESS_PYTHON = FastAccess
@@ -2957,9 +3015,8 @@ variable nor another attribute named wrong.
     >>> subvars.testvar = "wrong"
     Traceback (most recent call last):
     ...
-    ValueError: While trying to set the value(s) of variable `testvar`, \
-the following error occurred: 5 values are assigned to the scalar \
-variable `testvar`.
+    TypeError: While trying to set the value of variable `testvar`, the following \
+error occurred: The given value `wrong` cannot be converted to type `float`.
 
     Alternatively, you can item-access a variable:
 
@@ -3191,3 +3248,40 @@ def to_repr(
         assert isinstance(self, Dim2) and isinstance(values, MatrixInput)
         string = objecttools.assignrepr_list2(values, prefix, 72) + ")"
     return "\n".join(self.commentrepr + [string])
+
+
+# class V0(Variable0D[Any, Any, int], Variable[Any, Any, int]):
+#     TYPE = int
+#
+# class V0f(Variable0D[Any, Any, float], Variable[Any, Any, float]):
+#     TYPE = float
+#
+# class V0b(Variable0D[Any, Any, bool], Variable[Any, Any, bool]):
+#     TYPE = bool
+#
+# v0: V0
+# v0f: V0f
+# v0b: V0b
+#
+# reveal_type(v0 + 1.0)
+# reveal_type(v0 + 1)
+# reveal_type(v0 + True)
+# reveal_type(1.0 + v0)
+# reveal_type(1 + v0)
+# reveal_type(True + v0)
+# v0 + "1.0"
+# v0 + "1"
+# v0 + "True"
+# "1.0" + v0
+# "1" + v0
+# "True" + v0
+# reveal_type(1.0 + v0)
+# reveal_type(1 + v0)
+# reveal_type(True + v0)
+# reveal_type(v0 + v0f)
+# reveal_type(v0 + v0)
+# reveal_type(v0 + v0b)
+#
+# v0 += 1.0
+# v0 += 1
+# v0 += True

@@ -38,6 +38,7 @@ Sequence3 = Union[T1, T2, T3, Sequence[Union[T1, T2, T3]]]
 ValueType = TypeVar("ValueType", bound=float)
 ValueType_contra = TypeVar("ValueType_contra", bound=float, contravariant=True)
 Float_co = TypeVar("Float_co", covariant=True)
+Float = TypeVar("Float", bound=float)
 Float1 = TypeVar("Float1", bound=float)
 Float2 = TypeVar("Float2", bound=float)
 
@@ -146,7 +147,7 @@ class Vector(VectorInput[Float1]):
     def __setitem__(
         self,
         item: int,
-        value: float,
+        value: Float1,
     ) -> None:
         ...
 
@@ -154,14 +155,14 @@ class Vector(VectorInput[Float1]):
     def __setitem__(
         self,
         item: VectorSlice,
-        value: Union[float, VectorInput[float]],
+        value: Union[Float1, VectorInput[Float1]],
     ) -> None:
         ...
 
     def __setitem__(
         self,
         item: Union[int, VectorSlice],
-        value: Union[float, VectorInput[float]],
+        value: Union[Float1, VectorInput[Float1]],
     ) -> None:
         ...
 
@@ -313,14 +314,14 @@ class Matrix(MatrixInput[Float1]):
         ...
 
     @overload
-    def __setitem__(self, item: Tuple[int, int], value: float) -> None:
+    def __setitem__(self, item: Tuple[int, int], value: Float1) -> None:
         ...
 
     @overload
     def __setitem__(
         self,
         item: Union[int, Tuple[int, VectorSlice], Tuple[VectorSlice, int]],
-        value: Union[float, VectorInput[float]],
+        value: Union[Float1, VectorInput[Float1]],
     ) -> None:
         ...
 
@@ -328,7 +329,7 @@ class Matrix(MatrixInput[Float1]):
     def __setitem__(
         self,
         item: Union[slice, Tuple[VectorSlice, VectorSlice]],
-        value: Union[float, MatrixInput[float]],
+        value: Union[Float1, MatrixInput[Float1]],
     ) -> None:
         ...
 
@@ -342,7 +343,7 @@ class Matrix(MatrixInput[Float1]):
             slice,
             Tuple[VectorSlice, VectorSlice],
         ],
-        value: Union[float, VectorInput[float], MatrixInput[float]],
+        value: Union[float, VectorInput[Float1], MatrixInput[Float1]],
     ) -> None:
         ...
 
@@ -565,4 +566,6 @@ __all__ = [
     "VariableProtocol",
     "VectorInput",
     "Vector",
+    "VectorSlice",
+    "Float",
 ]
