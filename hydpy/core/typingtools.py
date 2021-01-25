@@ -37,10 +37,19 @@ Sequence3 = Union[T1, T2, T3, Sequence[Union[T1, T2, T3]]]
 
 ValueType = TypeVar("ValueType", bound=float)
 ValueType_contra = TypeVar("ValueType_contra", bound=float, contravariant=True)
-Float_co = TypeVar("Float_co", covariant=True)
-Float = TypeVar("Float", bound=float)
-Float1 = TypeVar("Float1", bound=float)
-Float2 = TypeVar("Float2", bound=float)
+Float_co = TypeVar(
+    "Float_co",
+    float,
+    int,
+    bool,
+    "VectorInput[float]",
+    "VectorInput[int]",
+    "VectorInput[bool]",
+    covariant=True,
+)
+Float = TypeVar("Float", float, int, bool)
+Float1 = TypeVar("Float1", float, int, bool)
+Float2 = TypeVar("Float2", float, int, bool)
 
 
 if TYPE_CHECKING:
@@ -569,3 +578,20 @@ __all__ = [
     "VectorSlice",
     "Float",
 ]
+
+
+xb: Vector[bool]
+xi: Vector[int]
+xf: Vector[float]
+yb: Vector[bool]
+yi: Vector[int]
+yf: Vector[float]
+reveal_type(xb + yb)
+reveal_type(xb + yi)
+reveal_type(xb + yf)
+reveal_type(xi + yb)
+reveal_type(xi + yi)
+reveal_type(xi + yf)
+reveal_type(xf + yb)
+reveal_type(xf + yi)
+reveal_type(xf + yf)
