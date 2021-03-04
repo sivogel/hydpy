@@ -27,6 +27,10 @@ MayNonerable1 = Union[T, Iterable[T], None]
 MayNonerable2 = Union[T1, T2, Iterable[Union[T1, T2]], None]
 MayNonerable3 = Union[T1, T2, T3, Iterable[Union[T1, T2, T3]], None]
 
+Collection1 = Union[T, Collection[T]]
+Collection2 = Union[T1, T2, Collection[Union[T1, T2]]]
+Collection3 = Union[T1, T2, T3, Collection[Union[T1, T2, T3]]]
+
 Sequence1 = Union[T, Sequence[T]]
 Sequence2 = Union[T1, T2, Sequence[Union[T1, T2]]]
 Sequence3 = Union[T1, T2, T3, Sequence[Union[T1, T2, T3]]]
@@ -484,6 +488,9 @@ class ScriptFunction(Protocol):
 
 __all__ = [
     "ArrayFloat",
+    "Collection1",
+    "Collection2",
+    "Collection3",
     "CyModelProtocol",
     "IterableNonString",
     "MatrixInput",
