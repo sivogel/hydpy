@@ -1,0 +1,17 @@
+.. |meteo_v001| replace:: :mod:`~hydpy.models.meteo_v001`
+.. |meteo_v002| replace:: :mod:`~hydpy.models.meteo_v002`
+.. |meteo_factors.PossibleSunshineDuration| replace:: :class:`~hydpy.models.meteo.meteo_factors.PossibleSunshineDuration`
+.. |meteo_factors.SunshineDuration| replace:: :class:`~hydpy.models.meteo.meteo_factors.SunshineDuration`
+.. |meteo_fluxes.GlobalRadiation| replace:: :class:`~hydpy.models.meteo.meteo_fluxes.GlobalRadiation`
+.. |meteo_inputs.GlobalRadiation| replace:: :class:`~hydpy.models.meteo.meteo_inputs.GlobalRadiation`
+.. |meteo_inputs.SunshineDuration| replace:: :class:`~hydpy.models.meteo.meteo_inputs.SunshineDuration`
+
+.. _meteo_v002:
+
+meteo_v002
+==========
+
+.. automodule:: hydpy.models.meteo_v002
+    :members:
+    :show-inheritance:
+    :exclude-members: CLASSES, RUN_METHODS, INTERFACE_METHODS, ADD_METHODS, INLET_METHODS, OUTLET_METHODS, RECEIVER_METHODS, SENDER_METHODS, PART_ODE_METHODS, FULL_ODE_METHODS, CONTROLPARAMETERS, DERIVEDPARAMETERS, FIXEDPARAMETERS, REQUIREDSEQUENCES, UPDATEDSEQUENCES, RESULTSEQUENCES, SOLVERPARAMETERS, SOLVERSEQUENCES, SUBMETHODS, SUBMODELINTERFACES, SUBMODELS, fastaccess, fastaccess_new, fastaccess_old, pars, seqs, subvars, subpars, subseqs, InletSequences, ReceiverSequences, StateSequences, LogSequences, AideSequences, OutletSequences, SenderSequences

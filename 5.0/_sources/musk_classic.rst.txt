@@ -1,0 +1,18 @@
+.. |Coefficients| replace:: :class:`~hydpy.models.musk.musk_control.Coefficients`
+.. |Discharge| replace:: :class:`~hydpy.models.musk.musk_states.Discharge`
+.. |Element| replace:: :class:`~hydpy.core.devicetools.Element`
+.. |NmbSegments| replace:: :class:`~hydpy.models.musk.musk_control.NmbSegments`
+.. |Node| replace:: :class:`~hydpy.core.devicetools.Node`
+.. |RunModel.RUN_METHODS| replace:: :attr:`~hydpy.core.modeltools.RunModel.RUN_METHODS`
+.. |musk_classic| replace:: :mod:`~hydpy.models.musk_classic`
+.. |musk_classic.NmbRuns| replace:: :class:`~hydpy.models.musk_classic.NmbRuns`
+
+.. _musk_classic:
+
+musk_classic
+============
+
+.. automodule:: hydpy.models.musk_classic
+    :members:
+    :show-inheritance:
+    :exclude-members: CLASSES, RUN_METHODS, ADD_METHODS, INLET_METHODS, OUTLET_METHODS, RECEIVER_METHODS, SENDER_METHODS, PART_ODE_METHODS, FULL_ODE_METHODS, CONTROLPARAMETERS, DERIVEDPARAMETERS, FIXEDPARAMETERS, REQUIREDSEQUENCES, UPDATEDSEQUENCES, RESULTSEQUENCES, SOLVERPARAMETERS, SOLVERSEQUENCES, SUBMETHODS, SUBMODELS, fastaccess, fastaccess_new, fastaccess_old, pars, seqs, subvars, subpars, subseqs, ReceiverSequences, InputSequences, FactorSequences, LogSequences, AideSequences, SenderSequences

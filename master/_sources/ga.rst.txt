@@ -1,0 +1,42 @@
+.. |Active_Bin_V1| replace:: :class:`~hydpy.models.ga.ga_model.Active_Bin_V1`
+.. |ActualSurfaceWater| replace:: :class:`~hydpy.models.ga.ga_aides.ActualSurfaceWater`
+.. |Add_SoilWater_V1| replace:: :class:`~hydpy.models.ga.ga_model.Add_SoilWater_V1`
+.. |AirEntryPotential| replace:: :class:`~hydpy.models.ga.ga_control.AirEntryPotential`
+.. |DT| replace:: :class:`~hydpy.models.ga.ga_control.DT`
+.. |Execute_Infiltration_V1| replace:: :class:`~hydpy.models.ga.ga_model.Execute_Infiltration_V1`
+.. |Infiltrate_WettingFrontBins_V1| replace:: :class:`~hydpy.models.ga.ga_model.Infiltrate_WettingFrontBins_V1`
+.. |InitialSurfaceWater| replace:: :class:`~hydpy.models.ga.ga_aides.InitialSurfaceWater`
+.. |Merge_FrontDepthOvershootings_V1| replace:: :class:`~hydpy.models.ga.ga_model.Merge_FrontDepthOvershootings_V1`
+.. |Merge_SoilDepthOvershootings_V1| replace:: :class:`~hydpy.models.ga.ga_model.Merge_SoilDepthOvershootings_V1`
+.. |MixinGARTO.check_waterbalance| replace:: :func:`~hydpy.models.ga.ga_model.MixinGARTO.check_waterbalance`
+.. |MixinGARTO.watercontents| replace:: :const:`~hydpy.models.ga.ga_model.MixinGARTO.watercontents`
+.. |MixinGARTO.watercontent| replace:: :const:`~hydpy.models.ga.ga_model.MixinGARTO.watercontent`
+.. |MoistureChange| replace:: :class:`~hydpy.models.ga.ga_logs.MoistureChange`
+.. |Moisture| replace:: :class:`~hydpy.models.ga.ga_states.Moisture`
+.. |NmbBins| replace:: :class:`~hydpy.models.ga.ga_control.NmbBins`
+.. |Percolate_FilledBin_V1| replace:: :class:`~hydpy.models.ga.ga_model.Percolate_FilledBin_V1`
+.. |Perform_GARTO_V1| replace:: :class:`~hydpy.models.ga.ga_model.Perform_GARTO_V1`
+.. |PoreSizeDistribution| replace:: :class:`~hydpy.models.ga.ga_control.PoreSizeDistribution`
+.. |Redistribute_Front_V1| replace:: :class:`~hydpy.models.ga.ga_model.Redistribute_Front_V1`
+.. |Remove_SoilWater_V1| replace:: :class:`~hydpy.models.ga.ga_model.Remove_SoilWater_V1`
+.. |ResidualMoisture| replace:: :class:`~hydpy.models.ga.ga_control.ResidualMoisture`
+.. |Return_DryDepth_V1| replace:: :class:`~hydpy.models.ga.ga_model.Return_DryDepth_V1`
+.. |Return_RelativeMoisture_V1| replace:: :class:`~hydpy.models.ga.ga_model.Return_RelativeMoisture_V1`
+.. |SaturationMoisture| replace:: :class:`~hydpy.models.ga.ga_control.SaturationMoisture`
+.. |Sequences.conditions| replace:: :const:`~hydpy.core.sequencetools.Sequences.conditions`
+.. |Set_ActualSurfaceWater_V1| replace:: :class:`~hydpy.models.ga.ga_model.Set_ActualSurfaceWater_V1`
+.. |Set_InitialSurfaceWater_V1| replace:: :class:`~hydpy.models.ga.ga_model.Set_InitialSurfaceWater_V1`
+.. |Shift_Front_V1| replace:: :class:`~hydpy.models.ga.ga_model.Shift_Front_V1`
+.. |Water_AllBins_V1| replace:: :class:`~hydpy.models.ga.ga_model.Water_AllBins_V1`
+.. |Withdraw_AllBins_V1| replace:: :class:`~hydpy.models.ga.ga_model.Withdraw_AllBins_V1`
+.. |ga_garto| replace:: :mod:`~hydpy.models.ga_garto`
+
+.. _ga:
+
+ga
+==
+
+.. automodule:: hydpy.models.ga
+    :members:
+    :show-inheritance:
+    :exclude-members: CLASSES, RUN_METHODS, INTERFACE_METHODS, ADD_METHODS, INLET_METHODS, OUTLET_METHODS, RECEIVER_METHODS, SENDER_METHODS, PART_ODE_METHODS, FULL_ODE_METHODS, CONTROLPARAMETERS, DERIVEDPARAMETERS, FIXEDPARAMETERS, REQUIREDSEQUENCES, UPDATEDSEQUENCES, RESULTSEQUENCES, SOLVERPARAMETERS, SOLVERSEQUENCES, SUBMETHODS, SUBMODELINTERFACES, SUBMODELS, fastaccess, fastaccess_new, fastaccess_old, pars, seqs, subvars, subpars, subseqs, InletSequences, ReceiverSequences, FactorSequences, OutletSequences, SenderSequences

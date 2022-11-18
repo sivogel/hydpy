@@ -1,0 +1,27 @@
+.. |AllowedExchange| replace:: :class:`~hydpy.models.exch.exch_control.AllowedExchange`
+.. |Element| replace:: :class:`~hydpy.core.devicetools.Element`
+.. |FusedVariable| replace:: :class:`~hydpy.core.devicetools.FusedVariable`
+.. |IntegrationTest| replace:: :class:`~hydpy.core.testtools.IntegrationTest`
+.. |LoggedWaterLevel| replace:: :class:`~hydpy.models.exch.exch_logs.LoggedWaterLevel`
+.. |Node.variable| replace:: :const:`~hydpy.core.devicetools.Node.variable`
+.. |Node| replace:: :class:`~hydpy.core.devicetools.Node`
+.. |WaterLevel| replace:: :class:`~hydpy.models.exch.exch_factors.WaterLevel`
+.. |dam_v006| replace:: :mod:`~hydpy.models.dam_v006`
+.. |exch_v001| replace:: :mod:`~hydpy.models.exch_v001`
+.. |dam_factors.WaterLevel| replace:: :class:`~hydpy.models.dam.dam_factors.WaterLevel`
+.. |dam_inlets.E| replace:: :class:`~hydpy.models.dam.dam_inlets.E`
+.. |dam_inlets.Q| replace:: :class:`~hydpy.models.dam.dam_inlets.Q`
+.. |dam_outlets.Q| replace:: :class:`~hydpy.models.dam.dam_outlets.Q`
+.. |exch_outlets.E| replace:: :class:`~hydpy.models.exch.exch_outlets.E`
+.. |exch_receivers.L| replace:: :class:`~hydpy.models.exch.exch_receivers.L`
+.. |exch_v001.Model| replace:: :class:`~hydpy.models.exch_v001.Model`
+
+.. _exch_v001:
+
+exch_v001
+=========
+
+.. automodule:: hydpy.models.exch_v001
+    :members:
+    :show-inheritance:
+    :exclude-members: CLASSES, RUN_METHODS, INTERFACE_METHODS, ADD_METHODS, INLET_METHODS, OUTLET_METHODS, RECEIVER_METHODS, SENDER_METHODS, PART_ODE_METHODS, FULL_ODE_METHODS, CONTROLPARAMETERS, DERIVEDPARAMETERS, FIXEDPARAMETERS, REQUIREDSEQUENCES, UPDATEDSEQUENCES, RESULTSEQUENCES, SOLVERPARAMETERS, SOLVERSEQUENCES, SUBMETHODS, SUBMODELINTERFACES, SUBMODELS, fastaccess, fastaccess_new, fastaccess_old, pars, seqs, subvars, subpars, subseqs, InletSequences, InputSequences, StateSequences, AideSequences, SenderSequences

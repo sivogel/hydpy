@@ -1,0 +1,17 @@
+.. |SoilModel_V1.execute_infiltration| replace:: :func:`~hydpy.interfaces.soilinterfaces.SoilModel_V1.execute_infiltration`
+.. |SoilModel_V1.get_soilwatercontent| replace:: :func:`~hydpy.interfaces.soilinterfaces.SoilModel_V1.get_soilwatercontent`
+.. |SoilModel_V1.set_actualsurfacewater| replace:: :func:`~hydpy.interfaces.soilinterfaces.SoilModel_V1.set_actualsurfacewater`
+.. |SoilModel_V1.set_initialsurfacewater| replace:: :func:`~hydpy.interfaces.soilinterfaces.SoilModel_V1.set_initialsurfacewater`
+.. |SoilModel_V1| replace:: :class:`~hydpy.interfaces.soilinterfaces.SoilModel_V1`
+.. |ga_garto| replace:: :mod:`~hydpy.models.ga_garto`
+.. |lland_v2| replace:: :mod:`~hydpy.models.lland_v2`
+
+.. _soilinterfaces:
+
+soilinterfaces
+==============
+
+.. automodule:: hydpy.interfaces.soilinterfaces
+    :members:
+    :show-inheritance:
+    :exclude-members: CLASSES, RUN_METHODS, INTERFACE_METHODS, ADD_METHODS, INLET_METHODS, OUTLET_METHODS, RECEIVER_METHODS, SENDER_METHODS, PART_ODE_METHODS, FULL_ODE_METHODS, CONTROLPARAMETERS, DERIVEDPARAMETERS, FIXEDPARAMETERS, REQUIREDSEQUENCES, UPDATEDSEQUENCES, RESULTSEQUENCES, SOLVERPARAMETERS, SOLVERSEQUENCES, SUBMETHODS, SUBMODELINTERFACES, SUBMODELS, fastaccess, fastaccess_new, fastaccess_old, pars, seqs, subvars, subpars, subseqs

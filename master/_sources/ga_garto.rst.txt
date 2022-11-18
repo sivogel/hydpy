@@ -1,0 +1,18 @@
+.. |Element| replace:: :class:`~hydpy.core.devicetools.Element`
+.. |IntegrationTest| replace:: :class:`~hydpy.core.testtools.IntegrationTest`
+.. |Merge_SoilDepthOvershootings_V1| replace:: :class:`~hydpy.models.ga.ga_model.Merge_SoilDepthOvershootings_V1`
+.. |NmbBins| replace:: :class:`~hydpy.models.ga.ga_control.NmbBins`
+.. |NmbSoils| replace:: :class:`~hydpy.models.ga.ga_control.NmbSoils`
+.. |Redistribute_Front_V1| replace:: :class:`~hydpy.models.ga.ga_model.Redistribute_Front_V1`
+.. |Withdraw_AllBins_V1| replace:: :class:`~hydpy.models.ga.ga_model.Withdraw_AllBins_V1`
+.. |ga_garto| replace:: :mod:`~hydpy.models.ga_garto`
+
+.. _ga_garto:
+
+ga_garto
+========
+
+.. automodule:: hydpy.models.ga_garto
+    :members:
+    :show-inheritance:
+    :exclude-members: CLASSES, RUN_METHODS, INTERFACE_METHODS, ADD_METHODS, INLET_METHODS, OUTLET_METHODS, RECEIVER_METHODS, SENDER_METHODS, PART_ODE_METHODS, FULL_ODE_METHODS, CONTROLPARAMETERS, DERIVEDPARAMETERS, FIXEDPARAMETERS, REQUIREDSEQUENCES, UPDATEDSEQUENCES, RESULTSEQUENCES, SOLVERPARAMETERS, SOLVERSEQUENCES, SUBMETHODS, SUBMODELINTERFACES, SUBMODELS, fastaccess, fastaccess_new, fastaccess_old, pars, seqs, subvars, subpars, subseqs, InletSequences, ReceiverSequences, FactorSequences, OutletSequences, SenderSequences
