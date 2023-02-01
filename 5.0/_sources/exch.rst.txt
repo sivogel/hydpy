@@ -1,0 +1,16 @@
+.. |Calc_ActualExchange_V1| replace:: :class:`~hydpy.models.exch.exch_model.Calc_ActualExchange_V1`
+.. |Calc_DeltaWaterLevel_V1| replace:: :class:`~hydpy.models.exch.exch_model.Calc_DeltaWaterLevel_V1`
+.. |Calc_PotentialExchange_V1| replace:: :class:`~hydpy.models.exch.exch_model.Calc_PotentialExchange_V1`
+.. |DeltaWaterLevel| replace:: :class:`~hydpy.models.exch.exch_factors.DeltaWaterLevel`
+.. |LoggedWaterLevel| replace:: :class:`~hydpy.models.exch.exch_logs.LoggedWaterLevel`
+.. |WaterLevel| replace:: :class:`~hydpy.models.exch.exch_factors.WaterLevel`
+
+.. _exch:
+
+exch
+====
+
+.. automodule:: hydpy.models.exch
+    :members:
+    :show-inheritance:
+    :exclude-members: CLASSES, RUN_METHODS, ADD_METHODS, INLET_METHODS, OUTLET_METHODS, RECEIVER_METHODS, SENDER_METHODS, PART_ODE_METHODS, FULL_ODE_METHODS, CONTROLPARAMETERS, DERIVEDPARAMETERS, FIXEDPARAMETERS, REQUIREDSEQUENCES, UPDATEDSEQUENCES, RESULTSEQUENCES, SOLVERPARAMETERS, SOLVERSEQUENCES, SUBMETHODS, SUBMODELS, fastaccess, fastaccess_new, fastaccess_old, pars, seqs, subvars, subpars, subseqs, InletSequences, InputSequences, StateSequences, AideSequences, SenderSequences

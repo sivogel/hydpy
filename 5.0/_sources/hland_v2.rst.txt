@@ -1,0 +1,29 @@
+.. |CFMax| replace:: :class:`~hydpy.models.hland.hland_control.CFMax`
+.. |FIELD| replace:: :const:`~hydpy.models.hland.hland_constants.FIELD`
+.. |FOREST| replace:: :const:`~hydpy.models.hland.hland_constants.FOREST`
+.. |GLACIER| replace:: :const:`~hydpy.models.hland.hland_constants.GLACIER`
+.. |GMelt| replace:: :class:`~hydpy.models.hland.hland_control.GMelt`
+.. |ILAKE| replace:: :const:`~hydpy.models.hland.hland_constants.ILAKE`
+.. |Indexer.dayofyear| replace:: :const:`~hydpy.core.indextools.Indexer.dayofyear`
+.. |Indexer| replace:: :class:`~hydpy.core.indextools.Indexer`
+.. |MaxBaz| replace:: :class:`~hydpy.models.hland.hland_control.MaxBaz`
+.. |Model.check_waterbalance| replace:: :func:`~hydpy.models.hland_v2.Model.check_waterbalance`
+.. |NmbStorages| replace:: :class:`~hydpy.models.hland.hland_control.NmbStorages`
+.. |RecStep| replace:: :class:`~hydpy.models.hland.hland_control.RecStep`
+.. |SEALED| replace:: :const:`~hydpy.models.hland.hland_constants.SEALED`
+.. |Sequences.conditions| replace:: :const:`~hydpy.core.sequencetools.Sequences.conditions`
+.. |TTM| replace:: :class:`~hydpy.models.hland.hland_derived.TTM`
+.. |TT| replace:: :class:`~hydpy.models.hland.hland_control.TT`
+.. |hland_v1| replace:: :mod:`~hydpy.models.hland_v1`
+.. |hland_v2| replace:: :mod:`~hydpy.models.hland_v2`
+.. |pub| replace:: :mod:`~hydpy.pub`
+
+.. _hland_v2:
+
+hland_v2
+========
+
+.. automodule:: hydpy.models.hland_v2
+    :members:
+    :show-inheritance:
+    :exclude-members: CLASSES, RUN_METHODS, ADD_METHODS, INLET_METHODS, OUTLET_METHODS, RECEIVER_METHODS, SENDER_METHODS, PART_ODE_METHODS, FULL_ODE_METHODS, CONTROLPARAMETERS, DERIVEDPARAMETERS, FIXEDPARAMETERS, REQUIREDSEQUENCES, UPDATEDSEQUENCES, RESULTSEQUENCES, SOLVERPARAMETERS, SOLVERSEQUENCES, SUBMETHODS, SUBMODELS, fastaccess, fastaccess_new, fastaccess_old, pars, seqs, subvars, subpars, subseqs, InletSequences, ReceiverSequences, LogSequences, SenderSequences

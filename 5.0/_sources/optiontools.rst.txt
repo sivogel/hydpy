@@ -1,0 +1,38 @@
+.. |False| replace:: :const:`False`
+.. |None| replace:: :const:`None`
+.. |OptionPropertyBase| replace:: :class:`~hydpy.core.optiontools.OptionPropertyBase`
+.. |OptionPropertyBool| replace:: :class:`~hydpy.core.optiontools.OptionPropertyBool`
+.. |OptionPropertyInt| replace:: :class:`~hydpy.core.optiontools.OptionPropertyInt`
+.. |OptionPropertyPeriod| replace:: :class:`~hydpy.core.optiontools.OptionPropertyPeriod`
+.. |OptionPropertySeriesAggregation| replace:: :class:`~hydpy.core.optiontools.OptionPropertySeriesAggregation`
+.. |OptionPropertySeriesFileType| replace:: :class:`~hydpy.core.optiontools.OptionPropertySeriesFileType`
+.. |OptionPropertyStr| replace:: :class:`~hydpy.core.optiontools.OptionPropertyStr`
+.. |Options.simulationstep| replace:: :const:`~hydpy.core.optiontools.Options.simulationstep`
+.. |Options.utclongitude| replace:: :const:`~hydpy.core.optiontools.Options.utclongitude`
+.. |Options.utcoffset| replace:: :const:`~hydpy.core.optiontools.Options.utcoffset`
+.. |Period| replace:: :class:`~hydpy.core.timetools.Period`
+.. |SeriesAggregationType| replace:: :const:`~hydpy.core.typingtools.SeriesAggregationType`
+.. |SeriesFileType| replace:: :const:`~hydpy.core.typingtools.SeriesFileType`
+.. |Timegrids.stepsize| replace:: :const:`~hydpy.core.timetools.Timegrids.stepsize`
+.. |Timegrids| replace:: :class:`~hydpy.core.timetools.Timegrids`
+.. |Timegrid| replace:: :class:`~hydpy.core.timetools.Timegrid`
+.. |Variable| replace:: :class:`~hydpy.core.variabletools.Variable`
+.. |bool| replace:: :class:`bool`
+.. |int| replace:: :class:`int`
+.. |property| replace:: :class:`property`
+.. |pub| replace:: :mod:`~hydpy.pub`
+.. |repr_| replace:: :const:`~hydpy.core.objecttools.repr_`
+.. |simulationstep| replace:: :func:`~hydpy.core.importtools.simulationstep`
+.. |str| replace:: :class:`str`
+.. |trim| replace:: :func:`~hydpy.core.variabletools.trim`
+.. |numpy.nan| replace:: :const:`~numpy.nan`
+
+.. _optiontools:
+
+optiontools
+===========
+
+.. automodule:: hydpy.core.optiontools
+    :members:
+    :show-inheritance:
+    :exclude-members: CLASSES, RUN_METHODS, ADD_METHODS, INLET_METHODS, OUTLET_METHODS, RECEIVER_METHODS, SENDER_METHODS, PART_ODE_METHODS, FULL_ODE_METHODS, CONTROLPARAMETERS, DERIVEDPARAMETERS, FIXEDPARAMETERS, REQUIREDSEQUENCES, UPDATEDSEQUENCES, RESULTSEQUENCES, SOLVERPARAMETERS, SOLVERSEQUENCES, SUBMETHODS, SUBMODELS, fastaccess, fastaccess_new, fastaccess_old, pars, seqs, subvars, subpars, subseqs
